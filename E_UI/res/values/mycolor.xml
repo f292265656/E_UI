@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="MidnightBlue">#191970</color>
+    <color name="SeaGreen">#2E8B57</color>
+    <color name="Moccasin">#FFE4B5</color>
+    <color name="DarkViolet">#9400D3</color>
+    <color name="DodgerBlue">#1E90FF</color>
+    <color name="GhostWhite">#F8F8FF</color>
+    <color name=" BlanchedAlmond">#FFEBCD</color>
+    <color name="MintCream">#F5FFFA</color>
+    <color name="LightCyan">#E0FFFF</color>
+    <color name="Wheat">#F5DEB3</color>
+    <color name="NavajoWhite">#FFDEAD</color>
+    <color name="MediumSlateBlue">#7B68EE</color>
+    <color name="Silver">#C0C0C0</color>
+    <color name="DarkGray">#A9A9A9</color>
+    <color name="Black">#111</color>
+    <color name="white"> #FFFFFF</color>
+    <color name="LightGoldenrodYellow"> #FAFAD2</color>
+    <color name="milky_white">#FFFFFF</color>
+    <color name="oriange">#FF6100</color>
+       
+       
+
+    
+</resources>
+ 

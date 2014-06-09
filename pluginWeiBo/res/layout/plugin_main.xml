@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ashen"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/contentList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottonPanel"
+        android:dividerHeight="@dimen/verticalspace"
+        android:padding="@dimen/pading"
+       >
+
+    </ListView>
+
+    <LinearLayout
+        android:id="@+id/bottonPanel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottomPanel_Height"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@color/oriange"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/sendMsg"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/sendMsg" />
+
+        <Button
+            android:id="@+id/refresh"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/refresh" />
+        <Button 
+              style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/UsrExit"
+             android:layout_height="match_parent"
+             android:text="@string/exit"
+             android:layout_width="40dp"
+            />
+    </LinearLayout>
+
+</RelativeLayout>
