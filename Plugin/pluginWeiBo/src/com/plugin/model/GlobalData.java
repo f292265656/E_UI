@@ -12,6 +12,7 @@ import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.view.LayoutInflater;
 
 
 /**
@@ -24,6 +25,7 @@ public class GlobalData {
 	
 	private static final String PREFERENCES_NAME = "com_weibo_sdk_android";
 	private static Context mainContext,pluginContext;
+	private static LayoutInflater lf;
 	/**
 	 * 保存accsssToken到SharedPreferences
 	 * @param context	上下文对象
@@ -79,5 +81,16 @@ public class GlobalData {
 	public static Context getPluginContext()
 	{
 		return pluginContext;
+	}
+	/*
+	 * 布局加载工具
+	 */
+	public static LayoutInflater getLayoutInflater()
+	{
+		if(lf==null)
+		{
+			lf=LayoutInflater.from(GlobalData.getPluginContext());
+		}
+		return lf;
 	}
 }

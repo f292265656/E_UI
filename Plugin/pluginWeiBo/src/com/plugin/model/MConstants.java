@@ -6,9 +6,9 @@ package com.plugin.model;
 public class MConstants
 {
 	 /** 当前 DEMO 应用的 APP_KEY，第三方应用应该使用自己的 APP_KEY 替换该 APP_KEY */
-    public static final String APP_KEY      = "1453832800";
+    public static final String APP_KEY      = "60371117";
     
-    public static String APP_SECRET = "cd026dbbc54a66b17cdfc454a10c5d99";
+    public static String APP_SECRET = "9a4dd08e229bfa04fbfdc74e703cdd31";
     /** 
      * 当前 DEMO 应用的回调页，第三方应用可以使用自己的回调页。
      * 建议使用默认回调页：https://api.weibo.com/oauth2/default.html

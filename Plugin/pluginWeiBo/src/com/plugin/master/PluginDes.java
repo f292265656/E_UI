@@ -37,8 +37,6 @@ public class PluginDes implements IDescription
 		return wp;	
 	}
 
-	
-	
 	public static class WeiBoFragement extends Fragment
 	{
 		

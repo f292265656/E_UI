@@ -9,5 +9,10 @@
     <dimen name="textSize_normal_2">30dp</dimen>
     <dimen name="pading">10dp</dimen>
     <dimen name="verticalspace">20dp</dimen>
+    <dimen name="userPanelHeight">40dp</dimen>
+    <dimen name="userIconDimen">25dp</dimen>
+     <dimen name="pading_middle">6dp</dimen>
+      <dimen name="pading_small">2dp</dimen>
+    
 
 </resources>
