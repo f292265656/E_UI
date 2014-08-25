@@ -21,7 +21,7 @@ import android.view.LayoutInflater;
  * @author wwj
  *
  */
-public class GlobalData {
+public class GlobalSetting {
 	
 	private static final String PREFERENCES_NAME = "com_weibo_sdk_android";
 	private static Context mainContext,pluginContext;
@@ -89,7 +89,7 @@ public class GlobalData {
 	{
 		if(lf==null)
 		{
-			lf=LayoutInflater.from(GlobalData.getPluginContext());
+			lf=LayoutInflater.from(GlobalSetting.getPluginContext());
 		}
 		return lf;
 	}

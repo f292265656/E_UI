@@ -5,34 +5,35 @@ package com.plugin.view;
  */
 import com.plugin.master.R;
 import com.plugin.model.Comments;
-import com.plugin.model.GlobalData;
+import com.plugin.model.GlobalSetting;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class SendMessageDialog extends Dialog implements
 		android.view.View.OnClickListener {
+	private final static String TAG="SendMessageDialog";
+	
 	private Context context, pluginContext;
 	private EditText edMsg;
-	private Button ok, cancle;
+	private ImageView ok, cancle;
 	private View rootView;
 	private Comments comments;
 
 	public SendMessageDialog(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
 		this.context = context;
 		init();
 	}
 	public SendMessageDialog(Context context, int theme) {
-
 		super(context, theme);
-		// TODO Auto-generated constructor stub
 		this.context = context;
 	}
 	
@@ -40,19 +41,21 @@ public class SendMessageDialog extends Dialog implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		rootView = GlobalData.getLayoutInflater().inflate(
-				R.layout.sendmessage_dialog, null);
-		setContentView(rootView);
+		super.onCreate(savedInstanceState);	
 		init();
 	}
 
 	public void init() {
-		pluginContext = GlobalData.getPluginContext();
+		rootView = GlobalSetting.getLayoutInflater().inflate(
+				R.layout.sendmessage_dialog, null);
+		setContentView(rootView);
+		setTitle(GlobalSetting.getPluginContext().getResources().getString(R.string.sendMsg));
+		//初始化
+		pluginContext = GlobalSetting.getPluginContext();
 		comments = new Comments();
 		edMsg = (EditText) rootView.findViewById(R.id.edit_msg);
-		ok = (Button) rootView.findViewById(R.id.ok);
-		cancle = (Button) rootView.findViewById(R.id.cancel);
+		ok = (ImageView) rootView.findViewById(R.id.ok);
+		cancle = (ImageView) rootView.findViewById(R.id.cancel);
 		bindEvent();
 	}
 
@@ -66,6 +69,7 @@ public class SendMessageDialog extends Dialog implements
 		// TODO Auto-generated method stub
 		if (v == ok) {
 			String content = edMsg.getText().toString();
+			Log.i(TAG, "OK"+content);
 			if (content != null && !content.isEmpty()) {
 				comments.sendComment(content);
 				hide();
@@ -74,6 +78,7 @@ public class SendMessageDialog extends Dialog implements
 				hide();
 			}
 		} else if (v == cancle) {
+			Log.i(TAG, "cancle");
 			hide();
 		}
 

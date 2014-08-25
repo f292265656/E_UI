@@ -4,7 +4,7 @@ package com.plugin.master;
  * 插件入口类
  */
 import com.e_ui.e_ui_support.IDescription;
-import com.plugin.model.GlobalData;
+import com.plugin.model.GlobalSetting;
 import com.plugin.view.WeiBoView;
 
 import android.app.Fragment;
@@ -23,8 +23,8 @@ public class PluginDes implements IDescription
 
 	public PluginDes(Context mainContetx,Context pluginContetx)
 	{
-	    GlobalData.setMainContext(mainContetx);
-	    GlobalData.setPluginContext(pluginContetx);
+	    GlobalSetting.setMainContext(mainContetx);
+	    GlobalSetting.setPluginContext(pluginContetx);
 		wp=new WeiBoFragement();
 		Log.i(TAG, "PluginDes");
 	}
@@ -49,7 +49,7 @@ public class PluginDes implements IDescription
 		{
 			if(w==null)
 			{
-				w =new WeiBoView(GlobalData.getPluginContext());
+				w =new WeiBoView(GlobalSetting.getPluginContext());
 			}
 			
 			return w;

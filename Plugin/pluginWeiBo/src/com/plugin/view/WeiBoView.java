@@ -4,65 +4,68 @@ package com.plugin.view;
  *主显示类
  *显示用户以及用户关注用户的评论 
  */
-import java.util.ArrayList;
+
+import java.util.Calendar;
 import java.util.List;
 
-import org.json.JSONException;
-
-import com.plugin.control.CommentListAdapter;
-import com.plugin.control.Oauth;
-import com.plugin.control.Oauth.AuthListener;
-import com.plugin.control.User;
-import com.plugin.master.PluginDes;
-import com.plugin.master.R;
-import com.plugin.model.CommentJsonUtils;
-import com.plugin.model.Comments;
-import com.plugin.model.GlobalData;
-import com.plugin.model.Comments.CommentContent;
-import com.plugin.model.Comments.CommentLisener;
-import com.plugin.model.Comments.ResStatus;
-
 import android.content.Context;
+
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.view.View.OnClickListener;
+
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.plugin.control.CommentListAdapter;
+import com.plugin.control.Oauth.AuthListener;
+import com.plugin.control.User;
+import com.plugin.master.R;
+import com.plugin.model.Comments;
+import com.plugin.model.Comments.CommentContent;
+import com.plugin.model.Comments.CommentLisener;
+import com.plugin.model.Comments.ResStatus;
+import com.plugin.model.GlobalSetting;
+import com.plugin.utils.CommentProcess;
 
 public class WeiBoView extends LinearLayout implements OnClickListener {
 	private static String TAG = "WeiBoView";
-	private final int REFRESH_UI = 1;
 	private Context mainContext, pluginContext;
 	// 控件
-	private ListView commentListView;
-	private Button sendMsg, reFresh, usrExit;
+	private PullToRefreshListView commentListView;
+	private ImageView sendMsg, usrExit;
 	private View rootView;
 	private SendMessageDialog dialog;
+	private UserExitDialog userExitDialog;
 	// 数据
-	private List<CommentContent> commentListData;
 	private CommentListAdapter listAdapter;
 	private Comments commentHelper;
-	private UpCommentListener upCommentListener;
 	private User user;
+	//事件监听
+	private UpCommentListener upCommentListener;
 	private UserLogListener userLogListener;
+	private ListRefreashListener refreashListener;
 	// 请求微博数据页数
-	private int pageSize = 1;
 	private Handler handler;
+	private CommentProcess commentProcess;
+	//控制 状态
+	AddDataStatus addDataStatus=AddDataStatus.InFoot;
 
 	public WeiBoView(Context context) {
 		super(context);
-		mainContext = GlobalData.getMainContext();
-		pluginContext = GlobalData.getPluginContext();
-		rootView = GlobalData.getLayoutInflater().inflate(R.layout.plugin_main,
-				null);
+		mainContext = GlobalSetting.getMainContext();
+		pluginContext = GlobalSetting.getPluginContext();
+		rootView = GlobalSetting.getLayoutInflater().inflate(
+				R.layout.plugin_main, null);
 		addView(rootView);
 		init();
 
@@ -70,14 +73,15 @@ public class WeiBoView extends LinearLayout implements OnClickListener {
 
 	protected void init() {
 		// 初始化
-		dialog = new SendMessageDialog(mainContext,
-				android.R.style.Theme_Holo_DialogWhenLarge_NoActionBar);
-		commentListView = (ListView) rootView.findViewById(R.id.commentList);
-		sendMsg = (Button) rootView.findViewById(R.id.sendMsg);
-		reFresh = (Button) rootView.findViewById(R.id.refresh);
-		usrExit = (Button) rootView.findViewById(R.id.UsrExit);
+		commentListView = (PullToRefreshListView) rootView
+				.findViewById(R.id.commentList);
+		sendMsg = (ImageView) rootView.findViewById(R.id.sendMsg);
 
+		usrExit = (ImageView) rootView.findViewById(R.id.UsrExit);
+		commentListView.setMode(Mode.BOTH);
+  
 		// 数据/事件
+		refreashListener=new ListRefreashListener();
 		userLogListener = new UserLogListener();
 		user = new User();
 		listAdapter = new CommentListAdapter();
@@ -90,8 +94,9 @@ public class WeiBoView extends LinearLayout implements OnClickListener {
 
 	protected void bindEvent() {
 		sendMsg.setOnClickListener(this);
-		reFresh.setOnClickListener(this);
+
 		usrExit.setOnClickListener(this);
+		commentListView.setOnRefreshListener(refreashListener);
 	}
 
 	// 接收子线程消息 更新界面
@@ -99,9 +104,13 @@ public class WeiBoView extends LinearLayout implements OnClickListener {
 		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				if (msg.what == REFRESH_UI) {
+				if ((ResStatus) msg.obj == ResStatus.SUCCEED) {
 					listAdapter.notifyDataSetChanged();
+				} else {
+					Toast.makeText(mainContext, "获取信息失败", Toast.LENGTH_SHORT)
+							.show();
 				}
+				commentListView.onRefreshComplete();
 			}
 		};
 	}
@@ -111,27 +120,57 @@ public class WeiBoView extends LinearLayout implements OnClickListener {
 		// TODO Auto-generated method stub
 		if (view == sendMsg) {
 			if (user.isUserLogin()) {
+				if(dialog==null)
+				{
+					dialog = new SendMessageDialog(mainContext,
+							android.R.style.Theme_Holo_Light_Dialog);
+				}
 				dialog.show();
 			} else {
 				Toast.makeText(mainContext, "请先登录", Toast.LENGTH_SHORT).show();
-				user.loginAsyn(userLogListener);
 			}
-		} else if (view == reFresh) {
-			if (user.isUserLogin()) {
-				commentHelper.getFriendsComments(pageSize, upCommentListener);
-			} else {
-				Toast.makeText(mainContext, "请先登录", Toast.LENGTH_SHORT).show();
-				user.loginAsyn(userLogListener);
+		}  else if (view == usrExit) {
+			if(userExitDialog==null)
+			{
+			
+				//延迟加载
+				userExitDialog=new UserExitDialog(mainContext);
 			}
-		} else if (view == usrExit) {
-			if (user.isUserLogin()) {
-				user.logout();
-				Toast.makeText(mainContext, "退出成功", Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(mainContext, "无用户", Toast.LENGTH_SHORT).show();
+			if(user.isUserLogin())
+			{
+				Log.i(TAG, "已登录");
+				userExitDialog.show();
+			}
+			else
+			{
+				Log.i(TAG, "未登录");
+				Toast.makeText(mainContext, "登录中", Toast.LENGTH_SHORT).show();
+				user.loginAsyn(userLogListener);
 			}
 		}
 
+	}
+    
+	//下拉刷新
+	public void pullDownRefresh() {
+		addDataStatus=AddDataStatus.InHead;
+		if (user.isUserLogin()) {
+			commentHelper.getFriendsComments(1, upCommentListener);
+		} else {
+			Toast.makeText(mainContext, "请先登录", Toast.LENGTH_SHORT).show();
+			user.loginAsyn(userLogListener);
+		}
+	}
+    //上拉刷新
+	public void pullUpRefresh() {
+		addDataStatus=AddDataStatus.InFoot;
+		if (user.isUserLogin()) {
+			commentHelper.getFriendsComments(commentHelper.getComments().size()
+					/ Comments.COMMENT_COUNT + 1, upCommentListener);
+		} else {
+			Toast.makeText(mainContext, "请先登录", Toast.LENGTH_SHORT).show();
+			user.loginAsyn(userLogListener);
+		}
 	}
 
 	/*
@@ -141,7 +180,7 @@ public class WeiBoView extends LinearLayout implements OnClickListener {
 
 		@Override
 		public void setResult(boolean res) {
-			// TODO Auto-generated method stub
+			Log.i(TAG, "LogIn res is "+res);
 			if (res) {
 				Toast.makeText(mainContext, "登陆成功", Toast.LENGTH_SHORT).show();
 			} else {
@@ -158,49 +197,54 @@ public class WeiBoView extends LinearLayout implements OnClickListener {
 
 		@Override
 		public void setComments(ResStatus status, List<CommentContent> comments) {
-			// TODO Auto-generated method stub
+			Message msg = new Message();
+			msg.obj = status;
 			if (status != ResStatus.SUCCEED) {
-				Toast.makeText(mainContext, "获取信息失败", Toast.LENGTH_SHORT)
-						.show();
+
+				handler.sendMessage(msg);
 				return;
 			}
-			addCommentData(comments);
-			listAdapter.setDataList(commentListData);
-			Message msg=new Message();
-			msg.what=REFRESH_UI;
+			// 延迟加载
+			if (commentProcess == null) {
+				commentProcess = new CommentProcess();
+			}
+			if(addDataStatus==AddDataStatus.InFoot)
+			{
+				commentHelper.addInFoot(comments);
+			}
+			else if(addDataStatus==AddDataStatus.InHead)
+			{
+				commentHelper.addInHead(comments);
+			}
+			
+			// 数据格式处理
+			for (CommentContent c : commentHelper.getComments()) {
+				commentProcess.process(Calendar.getInstance(), c);
+			}
+			listAdapter.setDataList(commentHelper.getComments());
 			handler.sendMessage(msg);
 		}
 	}
-
-	/*
-	 * 更新数据源
-	 */
-
-	private void addCommentData(List<CommentContent> newComments) {
-		if (commentListData == null) {
-			commentListData = new ArrayList<Comments.CommentContent>();
-		}
-		int pageBase = commentListData.size() / Comments.COMMENT_COUNT;
-		int remainder = commentListData.size() % Comments.COMMENT_COUNT;
-		// 前面数据填满一页倍数
-		if (remainder == 0) {
-			commentListData.addAll(newComments);
-		}
-		// 未填满
-		else {
-			int startIndex = pageBase * Comments.COMMENT_COUNT;
-			while (startIndex <= commentListData.size()) {
-				commentListData.remove(startIndex);
-			}
-			commentListData.addAll(newComments);
-		}
-		// 判断下次请求页数
-		if (commentListData.size() / Comments.COMMENT_COUNT == 0) {
-			pageSize++;
-		}
-
+	private enum AddDataStatus
+	{
+		InHead,InFoot;
 	}
+	private class ListRefreashListener implements OnRefreshListener2<ListView>
+	{
 
+		@Override
+		public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+			// TODO Auto-generated method stub
+			pullDownRefresh();
+			
+		}
 
+		@Override
+		public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+			// TODO Auto-generated method stub
+			pullUpRefresh();
+		}
+		
+	}
 
 }

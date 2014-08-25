@@ -15,7 +15,7 @@ import com.plugin.model.Comments.CommentContent;
 import android.util.Log;
 
 public class CommentJsonUtils {
-	private static String TAG = "WeiboContent";
+	private static String TAG = "CommentJsonUtils";
 
 	// 解析组装
 	public static List<CommentContent> toCommentContents(String jsonContent) {
@@ -32,18 +32,21 @@ public class CommentJsonUtils {
 				CommentContent ws = new CommentContent();
 				ws.comment = data.getString("text");
 				ws.created_time = data.getString("created_at");
+				ws.fromDevice = data.getString("source");
+				ws.id=data.getLong("id");
 				// 第四层 用户户信息解析
 				JSONObject usr = data.getJSONObject("user");
 				ws.usrName = usr.getString("name");
-				Log.i(TAG, ws.usrName);
-				ws.usrDescription = usr.getString("description");
+				ws.IconUrl = usr.getString("avatar_hd");
+				// ws.usrDescription = usr.getString("description");
 				res.add(ws);
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Log.i(TAG, "JSONException");
 		}
-
+		Log.i(TAG, "JSON SUCCEED !");
 		return res;
 	}
 

@@ -6,7 +6,7 @@ package com.plugin.control;
 import android.util.Log;
 
 import com.plugin.control.Oauth.AuthListener;
-import com.plugin.model.GlobalData;
+import com.plugin.model.GlobalSetting;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 
 
@@ -22,11 +22,11 @@ public class User {
 	}
 	public void logout()
 	{
-		GlobalData.clear(GlobalData.getMainContext());
+		GlobalSetting.clear(GlobalSetting.getMainContext());
 	}
 	public boolean isUserLogin()
 	{
-		Oauth2AccessToken oAccessToken=GlobalData.readAccessToken(GlobalData.getMainContext());
+		Oauth2AccessToken oAccessToken=GlobalSetting.readAccessToken(GlobalSetting.getMainContext());
 		if( oAccessToken.isSessionValid())
 		{
 			Log.i("User", oAccessToken.toString());

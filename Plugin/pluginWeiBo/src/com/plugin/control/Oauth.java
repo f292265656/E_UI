@@ -11,7 +11,7 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.plugin.model.GlobalData;
+import com.plugin.model.GlobalSetting;
 import com.plugin.model.MConstants;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuth;
@@ -29,8 +29,8 @@ public class Oauth {
 	private Handler handler;
 
 	public Oauth() {
-		mainContext = GlobalData.getMainContext();
-		mAccessToken = GlobalData.readAccessToken(mainContext);
+		mainContext = GlobalSetting.getMainContext();
+		mAccessToken = GlobalSetting.readAccessToken(mainContext);
 		mWeiboAuth = new WeiboAuth(mainContext, MConstants.APP_KEY,
 				MConstants.REDIRECT_URL, MConstants.SCOPE);
 		mAuthDialogListener = new AuthDialogListener();
@@ -69,7 +69,7 @@ public class Oauth {
 			mAccessToken = Oauth2AccessToken.parseAccessToken(arg0);
 			if (mAccessToken.isSessionValid()) {
 				// 保存token
-				GlobalData.keepAccessToken(mainContext, mAccessToken);
+				GlobalSetting.keepAccessToken(mainContext, mAccessToken);
 				msg.what=OAUTH_SUCCEED;
 
 			} else {
