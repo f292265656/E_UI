@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:Android="http://schemas.android.com/apk/res/android"
+    Android:layout_width="fill_parent"
+    Android:layout_height="fill_parent"
+    Android:orientation="vertical" >
+
+    <SeekBar
+        Android:id="@+id/seekBar"
+        Android:layout_width="fill_parent"
+        Android:layout_height="wrap_content"
+        Android:layout_marginBottom="5dp" />
+
+    <TextView
+        Android:id="@+id/name"
+        Android:layout_width="fill_parent"
+        Android:layout_height="wrap_content" />
+
+    <LinearLayout
+        Android:layout_width="fill_parent"
+        Android:layout_height="wrap_content"
+        Android:layout_marginBottom="20dp" >
+
+        <Button
+            Android:layout_width="40dp"
+            Android:layout_height="40dp"
+            Android:onClick="previous"
+            Android:text="|◀" />
+
+        <Button
+            Android:id="@+id/pp"
+            Android:layout_width="40dp"
+            Android:layout_height="40dp"
+            Android:onClick="pp"
+            Android:text="▶" />
+
+        <Button
+            Android:layout_width="40dp"
+            Android:layout_height="40dp"
+            Android:onClick="next"
+            Android:text="▶|" />
+    </LinearLayout>
+     <ListView  
+        Android:id="@+id/list"  
+        Android:layout_width="fill_parent"   
+        Android:layout_height="fill_parent"   
+        />
+
+</LinearLayout>
