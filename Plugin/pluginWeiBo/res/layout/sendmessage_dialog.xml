@@ -5,46 +5,33 @@
     android:background="@color/white"
     android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textSize="@dimen/textSize_normal_1"
-        android:textColor="@color/Black"
-        android:text="@string/sendMsg" />
-
     <EditText
         android:id="@+id/edit_msg"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="5"
+        android:layout_height="@dimen/sendMsgEdit_height"
         android:gravity="top"
-        android:textColor="@color/Black"
-        android:hint="@string/hiit" />
+        android:hint="@string/weiBoHint"
+        android:textColor="@color/Black" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
-        android:background="@color/oriange"
+        android:layout_height="@dimen/tabPanleHeight"
+        android:background="@color/DodgerBlue"
         android:orientation="horizontal" >
 
-        <Button
-            style="?android:attr/buttonBarButtonStyle" 
-            android:id="@+id/cancel"
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:text="@string/cancel"
-            android:textColor="@color/white"
-            android:layout_weight="1" />
-         <Button
-             style="?android:attr/buttonBarButtonStyle" 
+        <ImageView
             android:id="@+id/ok"
-            android:layout_width="0dp"
+            android:layout_width="0px"
             android:layout_height="match_parent"
-            android:textColor="@color/white"
-            android:text="@string/ok"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:src="@drawable/correct" />
+
+        <ImageView
+            android:id="@+id/cancel"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/close" />
     </LinearLayout>
 
 </LinearLayout>

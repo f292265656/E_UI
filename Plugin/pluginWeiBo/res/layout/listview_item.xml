@@ -1,19 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/weoboItemStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/weoboItemStyle"
-
+    android:showDividers="middle"
+    android:divider="?android:attr/listDivider"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/Uname"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
-        android:singleLine="true"
-        android:textColor="@color/Black"
-        android:textSize="@dimen/textSize_normal_1" />
+        android:layout_height="@dimen/userPanelHeight"
+        android:padding="@dimen/pading_small" >
+
+        <ImageView
+            android:id="@+id/Image_userIcon"
+            android:layout_width="@dimen/userIconDimen"
+            android:layout_height="@dimen/userIconDimen"
+           />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/Image_userIcon"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/Uname"
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="2"
+                android:singleLine="true"
+                android:textColor="@color/Black"
+                android:textSize="@dimen/textSize_normal" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="1" >
+
+                <TextView
+                    android:id="@+id/text_fremDevice"
+                    android:layout_width="wrap_content"
+                    android:textSize="@dimen/textSize_small"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/text_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                     android:textSize="@dimen/textSize_small"
+                    android:layout_alignParentRight="true" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/Ucontent"
