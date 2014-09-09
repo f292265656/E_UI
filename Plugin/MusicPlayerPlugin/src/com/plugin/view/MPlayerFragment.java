@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.musicplayerplugin.master.R;
+import com.musicplayerplugin.master.R.color;
+import com.musicplayerplugin.master.R.drawable;
 
 import com.plugin.model.GlobalData;
 
@@ -18,6 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
@@ -56,6 +59,7 @@ public class MPlayerFragment extends Fragment implements OnClickListener {
 
 	private boolean isPause;
 	private boolean isStartTrackingTouch;
+	private boolean tag=false;
 
 	private View rootView;
 	private Context mainContext = GlobalData.getMainContext();
@@ -187,9 +191,9 @@ public class MPlayerFragment extends Fragment implements OnClickListener {
 
 		// 获取sdcard中的所有歌曲
 		findAll(Environment.getExternalStorageDirectory(), list);
-		for (File f : list) {
+		/*for (File f : list) {
 			Log.i(TAG, f.getName());
-		}
+		}*/
 
 		// 播放列表进行排序，字符顺序
 		Collections.sort(list);
@@ -220,7 +224,7 @@ public class MPlayerFragment extends Fragment implements OnClickListener {
 
 			// 获取歌曲路径
 			player.setDataSource(data.get(current).get("path"));
-			Log.i(TAG, data.get(current).get("path"));
+//			Log.i(TAG, data.get(current).get("path"));
 
 			// 缓冲
 			player.prepare();
@@ -235,7 +239,8 @@ public class MPlayerFragment extends Fragment implements OnClickListener {
 			seekBar.setMax(player.getDuration());
 
 			// 播放按钮样式
-			ppButton.setText("||");
+			//ppButton.setText("||");
+			ppButton.setBackgroundResource(R.drawable.pause);
 
 			// 发送一个Runnable, handler收到之后就会执行run()方法
 			handler.post(new Runnable() {
@@ -276,14 +281,16 @@ public class MPlayerFragment extends Fragment implements OnClickListener {
 			return;
 		}
 
-		// Button button = (Button) view;
 		// 暂停/播放按钮
-		if ("||".equals(ppButton.getText())) {
+		if (!tag) {
 			pause();
-			ppButton.setText("▶");
+			//ppButton.setText("▶");
+			ppButton.setBackgroundResource(R.drawable.play);
+			
 		} else {
 			resume();
-			ppButton.setText("||");
+			ppButton.setBackgroundResource(R.drawable.pause);
+			
 		}
 	}
 
@@ -291,6 +298,7 @@ public class MPlayerFragment extends Fragment implements OnClickListener {
 		if (isPause) {
 			player.start();
 			isPause = false;
+			tag=false;
 		}
 	}
 
@@ -298,6 +306,7 @@ public class MPlayerFragment extends Fragment implements OnClickListener {
 		if (player != null && player.isPlaying()) {
 			player.pause();
 			isPause = true;
+			tag=true;
 		}
 	}
 
@@ -316,7 +325,6 @@ public class MPlayerFragment extends Fragment implements OnClickListener {
 
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
 			generateListView();
 			Message msg = new Message();
 			msg.what = refreshComplete;
@@ -329,13 +337,12 @@ public class MPlayerFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onStop() {
 		super.onStop();
-		player.stop();
+		pause();
 
 	}
 
 	@Override
 	public void onClick(View arg0) {
-		// TODO Auto-generated method stub
 		if (arg0 == ppButton) {
 			pp();
 		} else if (arg0 == preButton) {
@@ -347,3 +354,4 @@ public class MPlayerFragment extends Fragment implements OnClickListener {
 	}
 
 }
+

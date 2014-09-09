@@ -10,5 +10,7 @@
         Android:layout_width="fill_parent"  
         Android:layout_height="wrap_content"  
         Android:textSize="15sp"  
+        Android:textColor="@color/white"
+        Android:singleLine="true"
         />  
 </LinearLayout>  
